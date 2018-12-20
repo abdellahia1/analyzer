@@ -1,13 +1,11 @@
 
 
-void f_tcp(const u_char* packet, int* size) {
-
+void f_tcp(const u_char* packet, int* size, int* size_c) {
     u_int data_offset;
     struct tcphdr* tcphead = (struct tcphdr*)( packet + *size);
-    //*size+=sizeof(struct tcphdr);
-    printf("size tcp : %lu\n", sizeof(struct tcphdr));
+
     *size+= 4 * tcphead->th_off;
-    printf("size off tcp : %u\n", *size);
+    *size_c-= 4 * tcphead->th_off;
 
     printf("\033[35m        Source port : %i\n", ntohs(tcphead->th_sport));
     printf("        Destination port : %i\n", ntohs(tcphead->th_dport));
@@ -44,55 +42,72 @@ void f_tcp(const u_char* packet, int* size) {
 
     printf("\n");
 
-    //BOOTP
-    if((ntohs(tcphead->th_sport)==IS_BOOTP1 && ntohs(tcphead->th_dport)==IS_BOOTP2)
-      || (ntohs(tcphead->th_sport)==IS_BOOTP2 && ntohs(tcphead->th_dport)==IS_BOOTP1))
-    {
-        printf("\033[36m            ==================BOOTP/DHCP==================\n\n");
-        printf("\033[00m");
-        f_bootp(packet,size);
-    }
-    //DNS
-    if((ntohs(tcphead->th_sport)==IS_DNS || ntohs(tcphead->th_dport)==IS_DNS))
-    {
-        printf("\033[36m            ======================DNS=====================\n");
-        printf("\033[00m");
-        f_dns(packet,size);
-    }
-    //HTTP
-    if((ntohs(tcphead->th_sport)==IS_HTTP || ntohs(tcphead->th_dport)==IS_HTTP))
-    {
-        printf("\033[36m\n            ======================HTTP=====================\n");
-        printf("\033[00m");
-        f_http(packet,size);
-    }
-    //SMTP
-    if((ntohs(tcphead->th_sport)==IS_SMTP || ntohs(tcphead->th_dport)==IS_SMTP))
-    {
-        printf("\033[36m            ======================SMTP=====================\n");
-        printf("\033[00m");
-        f_smtp(packet,size);
-    }
-    //TELNET
-    if((ntohs(tcphead->th_sport)==IS_SMTP || ntohs(tcphead->th_dport)==IS_SMTP))
-    {
-        printf("\033[36m            =====================TELNET====================\n");
-        printf("\033[00m");
-        //f_telnet(packet,size);
-    }
-    //FTP
-    if((ntohs(tcphead->th_sport)==IS_FTP || ntohs(tcphead->th_dport)==IS_FTP))
-    {
-        printf("\033[36m            =======================FTP=====================\n");
-        printf("\033[00m");
-        f_ftp(packet,size);
-    }
-    //POP
-    if((ntohs(tcphead->th_sport)==IS_POP || ntohs(tcphead->th_dport)==IS_POP))
-    {
-        printf("\033[36m            =======================POP=====================\n");
-        printf("\033[00m");
-        f_pop(packet,size);
-    }
 
+
+
+
+
+
+
+
+
+    if(size_c != 0) {
+        //BOOTP
+        if((ntohs(tcphead->th_sport)==IS_BOOTP1 && ntohs(tcphead->th_dport)==IS_BOOTP2)
+          || (ntohs(tcphead->th_sport)==IS_BOOTP2 && ntohs(tcphead->th_dport)==IS_BOOTP1))
+        {
+            printf("\033[36m            ==================BOOTP/DHCP==================\n\n");
+            printf("\033[00m");
+            f_bootp(packet,size);
+        }
+        //DNS
+        if((ntohs(tcphead->th_sport)==IS_DNS || ntohs(tcphead->th_dport)==IS_DNS))
+        {
+            printf("\033[36m            ======================DNS=====================\n");
+            printf("\033[00m");
+            f_dns(packet,size);
+        }
+        //HTTP
+        if((ntohs(tcphead->th_sport)==IS_HTTP || ntohs(tcphead->th_dport)==IS_HTTP))
+        {
+            printf("\033[36m\n            ======================HTTP=====================\n");
+            printf("\033[00m");
+            f_http(packet,size,size_c);
+        }
+        //SMTP
+        if((ntohs(tcphead->th_sport)==IS_SMTP || ntohs(tcphead->th_dport)==IS_SMTP))
+        {
+            printf("\033[36m            ======================SMTP=====================\n");
+            printf("\033[00m");
+            f_smtp(packet,size,size_c);
+        }
+        //TELNET
+        if((ntohs(tcphead->th_sport)==IS_TELNET || ntohs(tcphead->th_dport)==IS_TELNET))
+        {
+            printf("\033[36m            =====================TELNET====================\n");
+            printf("\033[00m");
+            f_telnet(packet,size);
+        }
+        //FTP
+        if((ntohs(tcphead->th_sport)==IS_FTP || ntohs(tcphead->th_dport)==IS_FTP))
+        {
+            printf("\033[36m            =======================FTP=====================\n");
+            printf("\033[00m");
+            f_ftp(packet,size,size_c);
+        }
+        //POP
+        if((ntohs(tcphead->th_sport)==IS_POP || ntohs(tcphead->th_dport)==IS_POP))
+        {
+            printf("\033[36m            =======================POP=====================\n");
+            printf("\033[00m");
+            f_pop(packet,size,size_c);
+        }
+        //IMAP
+        if((ntohs(tcphead->th_sport)==IS_IMAP || ntohs(tcphead->th_dport)==IS_IMAP))
+        {
+            printf("\033[36m            ======================IMAP=====================\n");
+            printf("\033[00m");
+            f_imap(packet,size,size_c);
+        }
+    }
 }

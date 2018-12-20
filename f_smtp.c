@@ -1,9 +1,12 @@
 #include "projet0.h"
 
 
-void f_smtp(const u_char* packet, int* size){
+void f_smtp(const u_char* packet, int* size, int* size_c){
 
     printf("\033[34m");
+    printf("\n            ");
+
+    ascii(packet,size,*size_c);
 
 /*    if(strncmp("SMTP", packet, 5) == 0
        || strncmp("MAIL", packet, 4) == 0
@@ -34,7 +37,7 @@ void f_smtp(const u_char* packet, int* size){
         printf("                [... SMTP Content...]\n");
     }
 
-*/
+
     int i=0; //index into data
     if(*size == 0){
 		printf("This packet contains no more data\n");
@@ -49,7 +52,7 @@ void f_smtp(const u_char* packet, int* size){
   		else
   			printf(".");
   		i++;
-  	}
-    printf("\n\n");
+  	}*/
+    printf("\n");
     printf("\033[00m");
 }

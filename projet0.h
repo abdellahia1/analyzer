@@ -24,6 +24,7 @@
 
 //Protocols
 
+#define IS_IMAP 143
 #define IS_POP 110
 #define IS_FTP 21
 #define IS_TELNET 23
@@ -38,6 +39,9 @@
 #define IS_HTTP 80
 #define IS_SMTP 25
 
+#include "ascii.h"
+#include "f_imap.c"
+#include "f_telnet.c"
 #include "f_pop.c"
 #include "f_ftp.c"
 #include "f_sctp.c"
@@ -53,20 +57,24 @@
 #include "f_ip.c"
 #include "f_ethernet.c"
 
-
+void ascii(const u_char* packet, int* size, int size_c);
 int f_ethernet(const u_char* packet, int* size);
-int f_ip(const u_char* packet, int* size);
+int f_ip(const u_char* packet, int* size , int* size_c);
 int f_arp(const u_char* packet, int* size);
 int f_ipv6(const u_char* packet, int* size);
 void f_udp(const u_char* packet, int* size) ;
-void f_tcp(const u_char* packet, int* size);
+void f_tcp(const u_char* packet, int* size, int* size_c);
 void f_bootp(const u_char* packet, int* size);
 void f_dns(const u_char* packet, int* size);
-void f_http(const u_char* packet, int* size);
-void f_smtp(const u_char* packet, int* size);
-void f_ftp(const u_char* packet, int* size);
+void f_http(const u_char* packet, int* size, int* size_c);
+void f_smtp(const u_char* packet, int* size, int* size_c);
+void f_ftp(const u_char* packet, int* size, int* size_c);
 int f_icmp(const u_char* packet, int* size);
-void f_pop(const u_char* packet, int* size);
+void f_pop(const u_char* packet, int* size, int* size_c);
 int f_sctp(const u_char* packet, int* size);
+void f_imap(const u_char* packet, int* size, int* size_c);
+
+
+
 
 #endif

@@ -60,10 +60,12 @@ int f_icmp(const u_char* packet, int* size){
 
     printf("        Code : %d\n", (unsigned int) (icmph->code));
     printf("        Checksum : 0x%.4x\n", ntohs(icmph->checksum));
-    //printf("        Identifier : %d (0x%.4x)\n", ntohs(icmph->id), ntohs(icmph->id));
-    printf("        Data Payload\n");
-    PrintData(packet, size);
+    printf("        Identifier : %d (0x%.4x)\n", ntohs(icmph->un.echo.id), ntohs(icmph->un.echo.id));
+    printf("        Sequence : %d (0x%.4x)\n", ntohs(icmph->un.echo.sequence), ntohs(icmph->un.echo.sequence));
+    //printf("        Data Payload\n");
+    //PrintData(packet, size);
     printf("\033[00m");
+    printf("\n");
     return(0);
 }
 

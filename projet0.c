@@ -31,6 +31,7 @@ void got_packet(u_char *args, const struct pcap_pkthdr *header, const u_char *pa
 
     int i;
     int size=0;
+    int size_c;
     int pack;
     int packet_size=header->len;
 
@@ -43,7 +44,7 @@ void got_packet(u_char *args, const struct pcap_pkthdr *header, const u_char *pa
         case IS_IP:
             printf("\033[36m    ======================IP======================\n\n");
             printf("\033[00m");
-            pack=f_ip(packet,&size);
+            pack=f_ip(packet,&size,&size_c);
             break;    //IPv4
         case IS_IP6:
             printf("\033[36m    =====================IPv6=====================\n\n");
@@ -61,7 +62,7 @@ void got_packet(u_char *args, const struct pcap_pkthdr *header, const u_char *pa
         case IS_TCP:
             printf("\033[36m        ======================TCP=====================\n\n");
             printf("\033[00m");
-            f_tcp(packet, &size);
+            f_tcp(packet, &size, &size_c);
             break;   //TCP
         case IS_UDP:
             printf("\033[36m        ======================UDP=====================\n\n");

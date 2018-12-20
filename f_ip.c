@@ -4,12 +4,15 @@
 
 
 
-int f_ip(const u_char* packet, int* size){
+int f_ip(const u_char* packet, int* size, int* size_c){
 
     struct ip* iphead=(struct ip*)(packet+*size);
     int pro;
+    //int size_c=0;
 
-    *size+=sizeof(struct ip);
+    *size_c=iphead->ip_hl*4;
+    *size+=*size_c;
+    *size_c=ntohs(iphead->ip_len)-*size_c;
 
     printf("    \033[33mIPv%u\n", iphead->ip_v);
     printf("    Header length : %i bytes\n", (iphead->ip_hl)*4);

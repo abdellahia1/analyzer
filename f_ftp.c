@@ -1,8 +1,15 @@
 
-#include <string.h>
 
-void f_ftp(const u_char* packet, int* size){
-    if(strncmp("FTP", (char *)packet, 3) == 0
+void f_ftp(const u_char* packet, int* size, int* size_c){
+
+        ascii(packet,size,*size_c);
+  		printf("\n");
+
+}
+
+
+/*
+ if(strncmp("FTP", (char *)packet, 3) == 0
        || strncmp("USER", (char *)packet, 4) == 0
        || strncmp("PASS", (char *)packet, 4) == 0
        || strncmp("ACCT", (char *)packet, 4) == 0
@@ -33,4 +40,4 @@ void f_ftp(const u_char* packet, int* size){
     else {
         printf("                         [... FTP Content...]\n\n");
     }
-}
+*/
