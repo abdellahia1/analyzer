@@ -1,14 +1,4 @@
-
-#include <arpa/inet.h>
-#include <stdio.h>
-#include <sys/socket.h>
-#include <stdbool.h>
-#include <string.h>
-
-#include <netinet/in.h>
-#include <ctype.h>
-
-//extern int packet_size;
+#include "projet0.h"
 
 
 void f_smtp(const u_char* packet, int* size){

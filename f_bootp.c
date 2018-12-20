@@ -1,18 +1,8 @@
 #include "bootp.h"
-//#include "projet0.h"
-
-//#include <netinet/if_ether.h>
-#include <netinet/ip.h>
-#include <netinet/tcp.h>
-#include <netinet/udp.h>
-#include <unistd.h>
-#include <arpa/inet.h>
-#include <ctype.h>
 
 
-
-#define IS_BROADCAST 0x8000
-#define IS_U       ((ntohs(bootphead->bp_flags) << 1) & 1)
+#define IS_BROADCAST                       0x8000
+#define IS_U            ((ntohs(bootphead->bp_flags) << 1) & 1)
 
 
 void f_bootp(const u_char* packet, int* size){
@@ -112,7 +102,7 @@ void f_bootp(const u_char* packet, int* size){
             option = *pvendor++;
             len = *pvendor++;
 
-            if(option != 0) printf("                | Option %u(Len :%u): ", option, len);
+            if(option != 0) printf("                | Option %u : ", option);
 
             switch (option) {
                 case TAG_PAD:
@@ -195,6 +185,12 @@ void f_bootp(const u_char* packet, int* size){
                     break;
                 case TAG_CLIENT_ID:
                     printf("Client identifier: "); printf("%s",pvendor + 1);
+                    break;
+                case TAG_MAX_MSG_SIZE:
+                    printf("Maximue DHCP Message Size: ");
+                    break;
+                case TAG_OPT_OVERLOAD:
+                    printf("Option Overload: %i", (*pvendor)); //CORRECT
                     break;
                 default:
                     break;

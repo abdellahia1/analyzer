@@ -1,131 +1,90 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <pcap.h>
-#include <ctype.h>
-#include <string.h>
-#include <net/ethernet.h>
-#include <netinet/ip.h>
-#include <netinet/tcp.h>
-#include <netinet/udp.h>
-#include <arpa/inet.h>
-#include <netinet/in.h>
+#include "projet0.h"
 
-//#include "projet0.h"
-//Ethernet
-#define	IS_IP 0x0800
-#define IS_ARP 0x0806
-//Protocols
-
-#define IS_POP 110
-#define IS_FTP 21
-#define IS_TELNET 23
-#define IS_SCTP 132
-#define IS_ICMP 0x01
-#define IS_TCP 0x06
-#define IS_UDP 0x11
-#define IS_IP6 0x86DD
-#define IS_BOOTP1 67
-#define IS_BOOTP2 68
-#define IS_DNS 53
-#define IS_HTTP 80
-#define IS_SMTP 25
-
-#include "f_pop.c"
-//#include "f_ftp.c"
-#include "f_sctp.c"
-#include "f_icmp.c"
-#include "f_smtp.c"
-#include "f_dns.c"
-#include "f_bootp.c"
-#include "f_http.c"
-#include "f_udp.c"
-#include "f_tcp.c"
-#include "f_ipv6.c"
-#include "f_arp.c"
-#include "f_ip.c"
-#include "f_ethernet.c"
 
 int comp=0;
-struct in_addr ip_addr;
-struct in_addr ip_mask;
+struct in_addr ip_addr; //net
+struct in_addr ip_mask;  //mask
+int verbosity = 1;
+char errbuf[PCAP_ERRBUF_SIZE]; //Error message
+
 
 #define MAXBYTES 1518
 #define TIMEOUT 1000
 
 
-
+//how to use
 void usage(char *program_name) {
   printf("Usage : %s (-i <interface> | -o <file>) [-f <BPF filter>] [-v <1|2|3>(verbosity)>]\n", program_name);
   exit(2);
 }
 
+
+//errors due to pcap
+void stop_pcap(const char *error) {
+    perror(error);
+    fprintf(stderr, "%s\n", errbuf);
+    exit(EXIT_FAILURE);
+}
+
+//catch a packet
 void got_packet(u_char *args, const struct pcap_pkthdr *header, const u_char *packet){
 
     int i;
     int size=0;
     int pack;
     int packet_size=header->len;
-    //Ethernet
+
     printf("\033[36m===================ETHERNET===================\n\n");
     printf("\033[00m");
-    pack=f_ethernet(packet,&size);
+
+    pack=f_ethernet(packet,&size); //Ethernet
+
     switch(pack){
         case IS_IP:
             printf("\033[36m    ======================IP======================\n\n");
             printf("\033[00m");
             pack=f_ip(packet,&size);
-            break;
+            break;    //IPv4
         case IS_IP6:
             printf("\033[36m    =====================IPv6=====================\n\n");
             printf("\033[00m");
             pack=f_ipv6(packet,&size);
-            break;
+            break;  //IPv6
         case IS_ARP:
             printf("\033[36m    ======================ARP=====================\n\n");
             printf("\033[00m");
             pack=f_arp(packet, &size);
-            break;
+            break;  //ARP
     }
 
     switch(pack){
-        //TCP
         case IS_TCP:
             printf("\033[36m        ======================TCP=====================\n\n");
             printf("\033[00m");
             f_tcp(packet, &size);
-            break;
-        //UDP
+            break;   //TCP
         case IS_UDP:
             printf("\033[36m        ======================UDP=====================\n\n");
             printf("\033[00m");
             f_udp(packet, &size);
-            break;
+            break;    //UDP
         case IS_ICMP:
             printf("\033[36m        =====================ICMP=====================\n\n");
             printf("\033[00m");
             pack=f_icmp(packet, &size);
-            break;
+            break;  //ICMP
         case IS_SCTP:
             printf("\033[36m        =====================SCTP=====================\n\n");
             printf("\033[00m");
             pack=f_sctp(packet, &size);
-            break;
+            break;   //SCTP
     }
 
 }
 
 //          ***********************************MAIN*******************************************
 
-int verbosity = 1;
-char errbuf[PCAP_ERRBUF_SIZE]; // Message d'erreur
 
-// Fonction qui permet de gérer les erreurs relatives à pcap
-void abort_pcap(const char *error) {
-    perror(error);
-    fprintf(stderr, "%s\n", errbuf);
-    exit(EXIT_FAILURE);
-}
 int main(int argc, char *argv[])
 {
     char *device = NULL; // when capturing live
@@ -139,23 +98,24 @@ int main(int argc, char *argv[])
     int option;
     while((option = getopt(argc, argv, "hi:o:f:v:")) != -1) {
         switch(option) {
+            //help for usage
             case 'h':
-                fprintf(stderr, "usage: %s [-v verbosity] [-f filter] [-i interface]|[-o capture_file]\n", argv[0]);
-                exit(EXIT_SUCCESS);
-       // L'interface que l'on souhaite écouter
+                usage(argv[0]);
+                break;
+            //sniffing device
             case 'i':
                 device = optarg;
                 break;
-	// Le fichier à décoder
+            //file
             case 'o':
                 capture_file = optarg;
                 break;
             case 'f':
-	// Filtrage
+            //filter
                 filter = optarg;
                 printf("using \"%s\" as BPF filter\n", filter);
                 break;
-	// Niveau de verbosité souhaité (par défault : 1)
+            //verbosity (1 by default)
             case 'v':
                 verbosity = atoi(optarg);
                 if(verbosity < 1 || verbosity > 3) {
@@ -163,10 +123,12 @@ int main(int argc, char *argv[])
                     exit(EXIT_FAILURE);
                 }
                 break;
-            default: break;
+            default:
+                break;
         }
     }
 
+    //lookup for a device
     if(device != NULL && capture_file != NULL) {
         fprintf(stderr, "Error: you must choose between live capture or capture file\n");
         exit(EXIT_FAILURE);
@@ -174,33 +136,35 @@ int main(int argc, char *argv[])
 
     if(capture_file == NULL) {
         if(device == NULL && (device = pcap_lookupdev(errbuf)) == NULL) {
-            abort_pcap("pcap_lookupdev");
+            stop_pcap("pcap_lookupdev");
         }
-        printf("\nUsing device %s for capture ( IP addr : ", device);
+        printf("\nUsing device %s for capture\n", device);
 
+        //lookup for ip adress and mask of network
         if(pcap_lookupnet(device, &ip, &mask, errbuf) != 0) {
-            abort_pcap("pcap_lookupnet");
+            stop_pcap("pcap_lookupnet\n");
         }
 
         //print_ip_addr(ip); printf(" | Mask addr : "); print_ip_addr(mask); printf(")\n");
 
+        //capture a apcket on device
         if((capture = pcap_open_live(device, 1500, 0, 100, errbuf)) == NULL) {
-            abort_pcap("pcap_open_live");
+            stop_pcap("pcap_open_live");
         }
     }
     else {
-	// Dans le cas où un fichier est fourni, on le traite
+        //if the file is given
         if((capture = pcap_open_offline(capture_file, errbuf)) == NULL) {
-            abort_pcap("pcap_open_offline");
+            stop_pcap("pcap_open_offline");
         }
     }
 
     if(pcap_compile(capture, &bpf_program, filter, 0, mask) != 0) {
-        abort_pcap("pcap_compile");
+        stop_pcap("pcap_compile");
     }
 
     if(pcap_setfilter(capture, &bpf_program) != 0) {
-        abort_pcap("pcap_setfilter");
+        stop_pcap("pcap_setfilter");
     }
 
     pcap_freecode(&bpf_program);

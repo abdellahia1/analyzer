@@ -1,12 +1,5 @@
-//#include "projet0.h"
 
 #include "net_sock_dns.h"
-
-//#include <netinet/if_ether.h>
-#include <netinet/ip.h>
-#include <netinet/tcp.h>
-#include <netinet/udp.h>
-#include <arpa/inet.h>
 
 //DNS Flags
 #define IS_QR        ((ntohs(dnshead->flags) << 1) & 1)

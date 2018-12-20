@@ -1,10 +1,3 @@
-#include <sys/socket.h>
-//#include <netinet/if_ether.h>
-#include <netinet/ip.h>
-#include <netinet/tcp.h>
-#include <netinet/udp.h>
-#include <arpa/inet.h>
-//#include "projet0.h"
 
 #include "net_ipv6.h"
 

@@ -1,21 +1,5 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
-#include <errno.h>
 #include "icmp.h"
 #include "data.h"
-
-#include <netinet/udp.h>
-#include <netinet/tcp.h>
-#include <netinet/ip.h>
-#include <net/ethernet.h>
-#include <sys/socket.h>
-#include <arpa/inet.h>
-
-
-
-
 
 int f_icmp(const u_char* packet, int* size){
     unsigned short iphdrlen;

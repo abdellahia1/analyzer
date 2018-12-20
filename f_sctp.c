@@ -1,7 +1,6 @@
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include "sctp.h"
 
+#include "sctp.h"
+//SCTP FLAGS
 #define IS_DATA     0x00
 #define IS_INIT     0x01
 #define IS_INITA    0x02

@@ -1,26 +1,13 @@
-//#include <netinet/if_ether.h>
-#include <netinet/ip.h>
-#include <netinet/tcp.h>
-#include <netinet/udp.h>
-#include <arpa/inet.h>
 
-//TCP FLAGS
-#define	TH_FIN	0x01
-#define	TH_SYN	0x02
-#define	TH_RST	0x04
-#define	TH_PUSH	0x08
-#define	TH_ACK	0x10
-#define	TH_URG	0x20
-
-//#include "projet0.h"
 
 void f_tcp(const u_char* packet, int* size) {
-    //printf("        size before: %d\n",*size);
+
     u_int data_offset;
     struct tcphdr* tcphead = (struct tcphdr*)( packet + *size);
-    *size+=sizeof(struct tcphdr);
-
-    data_offset = 4 * tcphead->th_off;
+    //*size+=sizeof(struct tcphdr);
+    printf("size tcp : %lu\n", sizeof(struct tcphdr));
+    *size+= 4 * tcphead->th_off;
+    printf("size off tcp : %u\n", *size);
 
     printf("\033[35m        Source port : %i\n", ntohs(tcphead->th_sport));
     printf("        Destination port : %i\n", ntohs(tcphead->th_dport));
@@ -98,7 +85,7 @@ void f_tcp(const u_char* packet, int* size) {
     {
         printf("\033[36m            =======================FTP=====================\n");
         printf("\033[00m");
-        //f_ftp(packet,size);
+        f_ftp(packet,size);
     }
     //POP
     if((ntohs(tcphead->th_sport)==IS_POP || ntohs(tcphead->th_dport)==IS_POP))

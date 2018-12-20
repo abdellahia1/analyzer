@@ -1,22 +1,18 @@
 
 #include <string.h>
 
-
-
-
-
 void f_ftp(const u_char* packet, int* size){
-    if(strncmp("FTP", packet, 3) == 0
-       || strncmp("USER", packet, 4) == 0
-       || strncmp("PASS", packet, 4) == 0
-       || strncmp("ACCT", packet, 4) == 0
-       || strncmp("PORT", packet, 4) == 0
-       || strncmp("PASV", packet, 4) == 0
-       || strncmp("DELE", packet, 4) == 0
-       || strncmp("LIST", packet, 4) == 0
-       || strncmp("HELP", packet, 4) == 0
-       || strncmp("NOOP", packet, 4) == 0
-       || strncmp("QUIT", packet, 4) == 0) {
+    if(strncmp("FTP", (char *)packet, 3) == 0
+       || strncmp("USER", (char *)packet, 4) == 0
+       || strncmp("PASS", (char *)packet, 4) == 0
+       || strncmp("ACCT", (char *)packet, 4) == 0
+       || strncmp("PORT", (char *)packet, 4) == 0
+       || strncmp("PASV", (char *)packet, 4) == 0
+       || strncmp("DELE", (char *)packet, 4) == 0
+       || strncmp("LIST", (char *)packet, 4) == 0
+       || strncmp("HELP", (char *)packet, 4) == 0
+       || strncmp("NOOP", (char *)packet, 4) == 0
+       || strncmp("QUIT", (char *)packet, 4) == 0) {
 
         while(*packet != '\n')
             putchar(*packet++);
@@ -24,7 +20,7 @@ void f_ftp(const u_char* packet, int* size){
         putchar('\n');
         packet++;
 
-        while(strncmp("\r\n", packet, 2) != 0) { // print headers (<==> until we have double \n)
+        while(strncmp("\r\n", (char *)packet, 2) != 0) { // print headers (<==> until we have double \n)
             printf("        ");
 
             while(*packet != '\n')
@@ -35,6 +31,6 @@ void f_ftp(const u_char* packet, int* size){
         }
     }
     else {
-        printf("                [... FTP Content...]\n");
+        printf("                         [... FTP Content...]\n\n");
     }
 }

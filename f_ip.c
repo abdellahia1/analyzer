@@ -1,14 +1,7 @@
-//#include <netinet/if_ether.h>
-#include <netinet/ip.h>
-#include <netinet/tcp.h>
-#include <netinet/udp.h>
-#include <arpa/inet.h>
-
 
 #define NOFRAG 0x4000
 #define MOREFRAG 0x2000
 
-//#include "projet0.h"
 
 
 int f_ip(const u_char* packet, int* size){

@@ -1,10 +1,4 @@
-
-#include <netinet/if_ether.h>
-#include <netinet/ip.h>
-#include <netinet/tcp.h>
-#include <netinet/udp.h>
-#include <arpa/inet.h>
-
+#include "projet0.h"
 
 int f_ethernet(const u_char* packet, int* size){
     int i; int pro;

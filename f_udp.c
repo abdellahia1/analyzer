@@ -1,9 +1,3 @@
-//#include <netinet/if_ether.h>
-#include <netinet/ip.h>
-#include <netinet/tcp.h>
-#include <netinet/udp.h>
-#include <arpa/inet.h>
-
 
 
 void f_udp(const u_char* packet, int* size) {

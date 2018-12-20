@@ -1,13 +1,9 @@
 #include <netinet/if_ether.h>
-#include <netinet/ip.h>
-#include <arpa/inet.h>
-#include <netinet/in.h>
-#include <net/if_arp.h>
 
 #define ARP_MAC_LENGTH				  6
 #define ARP_IPv4_LENGTH				  4
 
-//#include "projet0.h"
+#include "projet0.h"
 
 int f_arp(const u_char* packet, int* size){
     int i;
